@@ -8,6 +8,7 @@ type Flow struct {
 
 type ResultType int
 
+// ResultType is the result of the step
 const (
 	Success ResultType = iota
 	Failure
