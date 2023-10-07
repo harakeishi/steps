@@ -32,6 +32,7 @@ func main() {
 				return targetData, nil
 			},
 			0,
+			&steps.Step{},
 		))
 	flow.AddStep(
 		steps.NewStep(
@@ -47,6 +48,7 @@ func main() {
 				return nil, nil
 			},
 			0,
+			flow.Steps[0],
 		))
 	// フローを実行
 	flow.Run()

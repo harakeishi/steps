@@ -22,11 +22,13 @@ type Step struct {
 	Retry       int                                    // Number of times to retry the step if it fails
 	Outputs     interface{}                            // Output of the step
 	Inputs      interface{}                            // Input to the step
+	PreStep     *Step                                  // Previous step
 	Result      ResultType                             // Result of the step
 }
 
 // RunStep runs the step
 func (s *Step) RunStep() error {
+	s.SetInput()
 	outputs, err := s.Run(s.Inputs)
 	if err != nil {
 		s.Result = Failure
@@ -38,18 +40,19 @@ func (s *Step) RunStep() error {
 	return nil
 }
 
-func NewStep(stepName string, description string, run func(interface{}) (interface{}, error), retry int) Step {
+// SetInput sets the input to the step
+func (s *Step) SetInput() {
+	s.Inputs = s.PreStep.Outputs
+}
+
+func NewStep(stepName string, description string, run func(interface{}) (interface{}, error), retry int, preStep *Step) Step {
 	return Step{
 		StepName:    stepName,
 		Description: description,
 		Run:         run,
+		PreStep:     preStep,
 		Retry:       retry,
 	}
-}
-
-// 前のstepの結果を次のstepの入力にする
-func (s *Step) SetInputs(inputs interface{}) {
-	s.Inputs = inputs
 }
 
 // NewFlow creates a new flow
@@ -59,10 +62,7 @@ func (f *Flow) AddStep(step Step) {
 
 // Run runs the flow
 func (f Flow) Run() {
-	for i, step := range f.Steps {
-		if i != 0 {
-			step.SetInputs(f.Steps[i-1].Outputs)
-		}
+	for _, step := range f.Steps {
 		if step.RunStep() != nil {
 			fmt.Println("Error")
 		}
