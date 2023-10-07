@@ -35,6 +35,7 @@ func (s *Step) RunStep() error {
 	}
 	outputs, err := s.Run(s.Inputs)
 	if err != nil {
+		// TODO: retry処理に関しては後で実装
 		return err
 	}
 	s.Outputs = outputs
@@ -52,7 +53,7 @@ func (s *Step) SetRun(run func(interface{}) (interface{}, error)) {
 	s.Run = run
 }
 
-// :TODO: あとで実装
+// TODO: あとで実装
 func (s Step) Check() bool {
 	// 実行にあたり前提条件が満たされているかチェックする
 	return true
@@ -76,6 +77,13 @@ func (f *Flow) AddStep(step Step) {
 func (f Flow) Plot() {
 	for i, step := range f.Steps {
 		fmt.Println(i, ":", step.StepName)
+		fmt.Println("  name:", step.StepName)
+		fmt.Println("  Description:", step.Description)
+		fmt.Println("  Retry:", step.Retry)
+		fmt.Println("  Prerequisites:", step.Prerequisites)
+		fmt.Println("  DependsOn:", step.DependsOn)
+		fmt.Printf("  Outputs:%#v\n", step.Outputs)
+		fmt.Printf("  Inputs:%#v\n", step.Inputs)
 	}
 }
 

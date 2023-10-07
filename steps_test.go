@@ -48,3 +48,43 @@ func TestStep_RunStep(t *testing.T) {
 		})
 	}
 }
+
+func TestFlow_Plot(t *testing.T) {
+	tests := []struct {
+		name string
+		f    Flow
+	}{
+		{
+			name: "test",
+			f: Flow{
+				Steps: []Step{
+					{
+						StepName:    "test",
+						Description: "test",
+						Run: func(i interface{}) (interface{}, error) {
+							tmp := i.(*testInput)
+							fmt.Printf("%+v\n", tmp.StepName)
+							return tmp.StepName, nil
+						},
+						Inputs: &testInput{},
+					},
+					{
+						StepName:    "test2",
+						Description: "test2",
+						Run: func(i interface{}) (interface{}, error) {
+							tmp := i.(*testInput)
+							fmt.Printf("%+v\n", tmp.StepName)
+							return tmp.StepName, nil
+						},
+						Inputs: &testInput{},
+					},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.f.Plot()
+		})
+	}
+}
