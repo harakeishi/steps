@@ -15,7 +15,7 @@ func main() {
 	// ステップを追加
 	flow.AddStep(
 		steps.NewStep(
-			"Get Target Data",
+			"GetTargetData",
 			"処理の対象者を取得する",
 			func(inputs interface{}) (interface{}, error) {
 				// 処理の対象者を取得する処理
@@ -32,11 +32,12 @@ func main() {
 				return targetData, nil
 			},
 			0,
-			&steps.Step{},
+			nil,
+			[]steps.ResultType{steps.Allways},
 		))
 	flow.AddStep(
 		steps.NewStep(
-			"Print Target Data",
+			"PrintTargetData",
 			"処理の対象者を表示する",
 			func(inputs interface{}) (interface{}, error) {
 				// 処理の対象者を表示する処理
@@ -47,9 +48,10 @@ func main() {
 				}
 				return nil, nil
 			},
-			0,
+			1,
 			flow.Steps[0],
+			[]steps.ResultType{steps.Success},
 		))
 	// フローを実行
-	flow.Run()
+	flow.Plot()
 }
